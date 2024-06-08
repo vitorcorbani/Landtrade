@@ -55,7 +55,10 @@ class Boss {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block.name === 'flare' && !this.game.spriteUpdate) {
+                    block.remove = true;
+                }
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (this.game.spriteUpdate && Math.random() < 0.3) {
                         this.destroyBlocks(blocks, x, y);
                     }
@@ -83,7 +86,7 @@ class Boss {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (this.game.spriteUpdate && Math.random() < 0.3) {
                         this.destroyBlocks(blocks, x, y);
                     }
@@ -108,7 +111,10 @@ class Boss {
     destroyBlocks (blocks, x, y) {
         for (let i = -4; i <= 4; i++) {
             for (let j = -5; j < 1; j++) {
-                blocks[x+i][y+j] = '';
+                let X = x+i; let Y = y+j;
+                let xPos = (X - Math.floor(this.game.width / 2 / this.game.chunckSize)*1.5)+Math.floor(this.game.PcreationX / this.game.tileSize);
+                let yPos = Y;
+                blocks[X][Y] = new Tile(this.game, xPos, yPos, 'flare');
             }
         }
     }
