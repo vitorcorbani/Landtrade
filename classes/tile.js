@@ -52,7 +52,7 @@ class Tile {
         }
     }
     update (myX, myY, blocks) {
-        if (!(this.type == 'visible' || this.type == 'liquid')) {
+        if (!(this.type == 'visible' || this.type == 'liquid' || this.type == 'air')) {
             function checkExistance(X, Y) {
                 if (X >= 0 && Y >= 0 && X < blocks.length && Y < blocks[0].length) return blocks[X][Y];
                 else return false;
@@ -78,17 +78,12 @@ class Tile {
         }
         else return true;
     }
-    checkHit (mousePos, player, x, y) {
-        function checkMouseCollide(mouse, other) {
-            if (mouse.x > other.x && mouse.x < other.x + other.w && mouse.y > other.y && mouse.y < other.y + other.h) return true; else return false;
-        };
-        if (checkMouseCollide(mousePos, this)) {
+    checkHit (mousePos, player) {
             this.game.particles.forEach(p => p.start({x: this.x, y: this.y}, this.color, 10/this.durability));
             this.durability -= player.break;
             if (this.durability <= 0) {
                 if (player.inventory.length < player.invMax) player.inventory.push(this.name);
                 this.remove = true;
             }
-        }
     }
 }
