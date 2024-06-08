@@ -246,9 +246,9 @@ class Player {
 
         const VX = 4;
         if (this.keys[87]) this.checkJump(); 
-        if (this.keys[86]) {
-            this.vel.y += this.vel.y > -3 ? -1 : 0;
-            this.vel.x = (this.keys[68] ? VX*3 : 0) + (this.keys[65] ? -VX*3 : 0);
+        if (this.keys[86]) { //fly
+            // this.vel.y += this.vel.y > -3 ? -1 : 0;
+            // this.vel.x = (this.keys[68] ? VX*3 : 0) + (this.keys[65] ? -VX*3 : 0);
         } else {
             if (this.keys[65]) {
                 this.vel.x = -VX;
@@ -296,7 +296,7 @@ class Player {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
                 if (block !== '' && collide(this, block)) {
-                    if (block.onScreen && block.name !== 'portal' && block.name !== 'hell') {
+                    if (block.onScreen && block.name !== 'portal' && block.name !== 'hell' && block.type !== 'air') {
                         if (block.type !== 'liquid') {
                             if (this.vel.y > 0 && this.y <= block.y) {
                                 if (this.vel.y > 9) this.lives -= this.vel.y**2/2 / this.armor;
@@ -325,7 +325,7 @@ class Player {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
                 if (block !== '' && collide(this, block)) {
-                    if (block.onScreen && block.name !== 'portal' && block.name !== 'hell') {
+                    if (block.onScreen && block.name !== 'portal' && block.name !== 'hell' && block.type !== 'air') {
                         if (block.type !== 'liquid') {
                             if (this.vel.x > 0 && this.x <= block.x) {
                                 this.vel.x = 0;
