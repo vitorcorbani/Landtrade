@@ -55,7 +55,7 @@ class Enemy {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (block.type !== 'liquid') {
                         if (this.vel.y > 0 && this.y <= block.y) {
                             if (this.vel.y > 9) this.lives -= this.vel.y**2/20;
@@ -81,7 +81,7 @@ class Enemy {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (block.type !== 'liquid') {
                         if (this.vel.x > 0 && this.x <= block.x) {
                             this.vel.x = 0;
@@ -104,7 +104,6 @@ class Enemy {
     playerCollision (player) {
         if (collide(this, player)) {
             player.lives -= this.damage/player.armor;
-            console.log(this.damage/player.armor);
         }
     }
     checkJump () {
