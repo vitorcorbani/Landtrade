@@ -67,7 +67,7 @@ class Villager {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (block.type !== 'liquid') {
                         if (this.vel.y > 0 && this.y <= block.y) {
                             if (this.vel.y > 9) this.lives -= this.vel.y**2/20;
@@ -94,7 +94,7 @@ class Villager {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
                 if (block !== '' && collide(this, block)) {
-                    if (block.type !== 'liquid') {
+                    if (block.type !== 'liquid' && block.type !== 'air') {
                         if (this.vel.x > 0 && this.x <= block.x) {
                             this.vel.x = 0;
                             this.x = block.x - this.w - 0.01;
@@ -125,6 +125,11 @@ class Villager {
                             return game.tilesInfo[i].value;
                         }
                     }
+                    for (let i = 0; i < game.itensInfo.length; i++) {
+                        if (game.itensInfo[i].name === item) {
+                            return game.itensInfo[i].value;
+                        }
+                    }
                 }
                 let item = player.inventory[player.invSelected];
                 if (typeof item === 'string') {
@@ -143,7 +148,7 @@ class Villager {
                         let toBuy = 'not a item';
                         for (let i = 0; i < this.game.itensInfo.length; i++) { //check if is it a item, if it's make it a item
                             if (this.game.itensInfo[i].name === product.name) {
-                                toBuy = new Item(this.game, this.game.itensInfo[i]);
+                                toBuy = new Item(this.game, this.game.itensInfo[i].name);
                                 break;
                             }
                         }
