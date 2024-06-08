@@ -44,9 +44,11 @@ function getGame(canvas, ctx) {
                 {name: 'clay', color: 'rgb(180, 180, 235)', type: 'block', durability: '1', value: '1'},
                 {name: 'glass', color: 'rgb(255, 255, 255, 0.35)', type: 'block', durability: '1', value: '0'},
                 {name: 'portal', color: 'purple', type: 'block', durability: '10', value: '0'},
+                {name: '?', color: 'rgb(255, 50, 0, 0.2)', type: 'block', durability: '1', value: '0'},
 
                 {name: 'hell', color: 'red', type: 'block', durability: '10', value: '0'},
                 {name: 'litter', color: 'rgb(80, 20, 10)', type: 'block', durability: '2', value: '0'},
+                {name: 'flare', color: 'orange', type: 'air', durability: '1', value: '0'},
 
                 {name: 'tree', color: 'rgb(70, 52, 2)', type: 'tree', durability: '1', value: '0'},
                 {name: 'river', color: 'blue', type: 'river', durability: '1', value: '0'},
@@ -76,15 +78,55 @@ function getGame(canvas, ctx) {
                 this.particles.push(new Particle());
             }
             this.player = new Player(this);
+            if (localStorage.getItem('playerInventory')) {
+                let arrInfo = localStorage.getItem('playerInventory').split(',');
+                for (let i = 0; i < arrInfo.length; i+=2) {
+                    let item = arrInfo[i+1];
+                    if (arrInfo[i] === 'object') item = new Item(this, arrInfo[i+1]);
+                    this.player.inventory.push(item);
+                }
+            }
             this.entities = [];
             this.translateX = -this.player.x + canvas.width / 2;
             this.translateY = -this.player.y + canvas.height / 2;
             this.blocks = [];
             this.saveBlocks = [];
+            if (localStorage.getItem('savedBlocks')) {
+                let arrInfo = localStorage.getItem('savedBlocks').split(',');
+                for (let i = 0; i < arrInfo.length; i+=3) {
+                    let obj = {
+                        x: Number(arrInfo[i]),
+                        y: Number(arrInfo[i+1]),
+                        name: ((arrInfo[i+2] !== 'false') ? arrInfo[i+2] : false)
+                    }
+                    this.saveBlocks.push(obj);
+                }
+            }
             this.PcreationX = this.player.x;
             this.generateChunks(this);
             this.portals = [];
             this.hells = [];
+            setInterval(function() {if (game.start) game.autoSave(game)}, 10000);
+        },
+        autoSave: function (game) {
+            let inventorySave = [];
+            game.player.inventory.forEach(item => {
+                if (item instanceof Item) {
+                    inventorySave.push('object');
+                    inventorySave.push(item.name);
+                } else {
+                    inventorySave.push('');
+                    inventorySave.push(item);
+                }
+            });
+            localStorage.setItem('playerInventory', inventorySave);
+            let blocksInfoSave = [];
+            game.saveBlocks.forEach(save => {
+                blocksInfoSave.push(Number(save.x));
+                blocksInfoSave.push(Number(save.y));
+                blocksInfoSave.push(save.name);
+            });
+            localStorage.setItem('savedBlocks', blocksInfoSave);
         },
         generateChunks: function (game) {
             game.world = 'overworld';
