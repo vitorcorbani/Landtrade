@@ -42,7 +42,7 @@ class Pig {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (block.type !== 'liquid') {
                         if (this.vel.y > 0 && this.y <= block.y) {
                             this.vel.y = 0;
@@ -67,7 +67,7 @@ class Pig {
         for (let x = 0; x <= blocks.length-1; x++) {
             for (let y = 0; y <= blocks[x].length-1; y++) {
                 let block = blocks[x][y];
-                if (block !== '' && collide(this, block)) {
+                if (block !== '' && collide(this, block) && block.type !== 'air') {
                     if (block.type !== 'liquid') {
                         if (this.vel.x > 0 && this.x <= block.x) {
                             this.vel.x = 0;
