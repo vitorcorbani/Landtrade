@@ -19,7 +19,7 @@
     top: 5px;
     left: 50%;
     translate: -50% 0;
-    width: 280px;
+    width: 350px;
     padding: 10px;
 }
 #mainButtons {
@@ -43,8 +43,9 @@
     background: rgb(153, 153, 153);
     position: absolute;
     left: 10%;
-    top: 80%;
+    top: 75%;
     width: 60px;
+    height: 30px;
 }
 #rigthButton {
     scale: 2;
@@ -52,8 +53,9 @@
     background: rgb(153, 153, 153);
     position: absolute;
     right: 10%;
-    top: 80%;
+    top: 75%;
     width: 60px;
+    height: 30px;
 }
 #jumpButton {
     scale: 2;
@@ -61,7 +63,19 @@
     background: rgb(153, 153, 153);
     position: absolute;
     right: 10%;
-    top: 60%;
+    top: 40%;
     width: 60px;
+    height: 30px;
 }
+
+#uiButton {
+    scale: 1.5;
+    position: absolute;
+    color: white;
+    font: 15px Consolas;
+    background: rgb(36, 36, 36);
+    right: 30%;
+    top: 50%;
+}
+
 
