@@ -75,47 +75,54 @@ class Player {
         this.touchY;
         this.touchX;
         //keys index -> 65 left , 68 right , 87 up
-        window.addEventListener('touchstart', e => {
-            this.touchY = e.changedTouches[0].pageY;
-            this.touchX = e.changedTouches[0].pageX;
+        window.addEventListener('click', e => {
+            // this.touchY = e.changedTouches[0].pageY;
+            // this.touchX = e.changedTouches[0].pageX;
         });
         window.addEventListener('touchmove', e => {
-            const minimumDist = 50;
-            const DISTY = e.changedTouches[0].pageY - this.touchY;
-            if (DISTY < -minimumDist && !this.keys[87]) this.keys[87] = true;
-            const DISTX = e.changedTouches[0].pageX - this.touchX;
-            if (DISTX < -minimumDist && !this.keys[65]) this.keys[65] = true;
-            if (DISTX > minimumDist && !this.keys[68]) this.keys[68] = true;
+            // const minimumDist = 50;
+            // const DISTY = e.changedTouches[0].pageY - this.touchY;
+            // if (DISTY < -minimumDist && !this.keys[87]) this.keys[87] = true;
+            // const DISTX = e.changedTouches[0].pageX - this.touchX;
+            // if (DISTX < -minimumDist && !this.keys[65]) this.keys[65] = true;
+            // if (DISTX > minimumDist && !this.keys[68]) this.keys[68] = true;
         });
         window.addEventListener('touchend', e => {
-            const minimumDist = 50;
-            const DISTY = e.changedTouches[0].pageY - this.touchY;
-            if (DISTY < -minimumDist && !this.keys[87]) this.keys[87] = false;
-            const DISTX = e.changedTouches[0].pageX - this.touchX;
-            if (DISTX < -minimumDist && !this.keys[65]) this.keys[65] = false;
-            if (DISTX > minimumDist && !this.keys[68]) this.keys[68] = false;
-            this.keys[67] = false;
-            this.keys[86] = false;
+            // const minimumDist = 50;
+            // const DISTY = e.changedTouches[0].pageY - this.touchY;
+            // if (DISTY < -minimumDist && !this.keys[87]) this.keys[87] = false;
+            // const DISTX = e.changedTouches[0].pageX - this.touchX;
+            // if (DISTX < -minimumDist && !this.keys[65]) this.keys[65] = false;
+            // if (DISTX > minimumDist && !this.keys[68]) this.keys[68] = false;
+            // this.keys[67] = false;
+            // this.keys[86] = false;
         });
-        document.getElementById('jumpButton').addEventListener('touchstart', () => {
+        document.getElementById('trashButton').addEventListener('touchend', () => {
+            this.inventory.splice(this.invSelected, 1);
+        });
+        document.getElementById('jumpButton').addEventListener('click', () => {
             this.keys[87] = true;
         });
         document.getElementById('jumpButton').addEventListener('touchend', () => {
             this.keys[87] = false;
         });
         
-        document.getElementById('rigthButton').addEventListener('touchstart', () => {
+        document.getElementById('rigthButton').addEventListener('click', () => {
             this.keys[68] = true;
         });
         document.getElementById('rigthButton').addEventListener('touchend', () => {
             this.keys[68] = false;
+            this.keys[65] = false;
+            this.vel.x = 0;
         });
 
-        document.getElementById('leftButton').addEventListener('touchstart', () => {
+        document.getElementById('leftButton').addEventListener('click', () => {
             this.keys[65] = true;
         });
         document.getElementById('leftButton').addEventListener('touchend', () => {
+            this.keys[68] = false;
             this.keys[65] = false;
+            this.vel.x = 0;
         });
 
         document.getElementById('useButton').addEventListener('click', () => {
@@ -124,6 +131,10 @@ class Player {
         document.getElementById('changeButton').addEventListener('click', () => {
             if (this.invSelected < this.inventory.length-1) this.invSelected++;
             else this.invSelected = 0;
+        });
+        document.getElementById('uiButton').addEventListener('click', () => {
+            if (this.tradeSelected < game.productsInfo.length) this.tradeSelected++;
+            else this.tradeSelected = 1;
         });
     }
     draw(ctx, canvas) {
@@ -165,9 +176,9 @@ class Player {
         ctx.restore();
         ctx.save();
         ctx.translate(this.x, this.y);
-        for (let i = Math.floor(this.lives/10); i >= 0; i--) {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(-(Math.floor(this.lives/10)*3)+i*6 + 2, -25, 4, 4);
+        for (let i = 200/10; i >= 0; i--) {
+            if (i*10 <= this.lives) ctx.fillStyle = 'red'; else ctx.fillStyle = 'rgb(0, 0, 0, 0.7)';
+            ctx.fillRect(-(Math.floor(200/10)*3)+i*6 + 2, -25, 4, 4);
         }
         ctx.restore();
 
@@ -175,10 +186,10 @@ class Player {
             ctx.save();
             ctx.translate(-this.game.translateX, -this.game.translateY);
             ctx.fillStyle = 'gray';
-            let invX = 50;
-            let invY = 10;
-            let invH = 14*this.invMax + 5;
-            let scale = canvas.height/this.game.height*0.9;
+            let invX = 5;
+            let invY = 90-this.invSelected*15;
+            let invH = 15*this.invMax + 5;
+            let scale = 1.5*canvas.height/this.game.height;
             ctx.scale(scale, scale);
             ctx.fillRect(invX, invY, 85, invH);
             let rows = invH / 10;
@@ -190,15 +201,15 @@ class Player {
                 if (this.inventory[i] instanceof Item) inventory[i].push(this.inventory[i].name);
                 else inventory[i].push(this.inventory[i]);
             }
-            ctx.font = '13px Trebuchet MS';
+            ctx.font = '14px Trebuchet MS';
             ctx.fillStyle = 'white';
             for (let i = 0; i < this.inventory.length; i++) {
-                ctx.fillText(i + '- ' + inventory[i], invX+4, invY+14*i + 10);
+                ctx.fillText(i + '- ' + inventory[i], invX+4, invY+15*i + 10);
                 if (i === this.invSelected) {
                     ctx.lineWidth = 2;
                     ctx.save();
                     ctx.strokeStyle = 'rgb(255, 0, 0)';
-                    ctx.strokeRect(invX-1, invY+14*i-1, 70, 14);
+                    ctx.strokeRect(invX-1, invY+15*i-1.5, 70, 14);
                     ctx.restore();
                 }
             }   
@@ -213,8 +224,8 @@ class Player {
         }
         if (this.lives <= 0) {
             this.lives = 200;
-            this.game.entities = [];
-            this.inventory = [];
+            localStorage.setItem('playerPosition', String([0, 0]));
+            localStorage.setItem('playerInventory', []);
             this.game.reset(this.game);
         }
         if (this.y > this.game.height*5) {
@@ -269,6 +280,12 @@ class Player {
         this.game.hells.forEach((hell, index) => {
             if (collide(this, {x: hell.x, y: hell.y, w: this.game.tileSize, h: this.game.tileSize})) {
                 this.game.generateHellChunks(this.game);
+                this.game.blocks.forEach((block, indexBlock) => {
+                    if (block.x == hell.x && block.y == hell.y) {
+                        this.game.blocks.splice(indexBlock, 1);
+                        this.game.saveBlocks.push({x: block.x, y: block.y, name: false});
+                    }
+                });
                 this.game.hells.splice(index, 1);
             }
         });
