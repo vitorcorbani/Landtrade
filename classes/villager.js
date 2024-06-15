@@ -27,8 +27,8 @@ class Villager {
         
         if (this.drawUi) {
             ctx.save();
-            let uiX = -this.w*2;
-            let uiY = -200;
+            let uiX = -200;
+            let uiY = -this.h;
             ctx.fillStyle = 'gray';
             ctx.fillRect(uiX, uiY, this.w*8, 120);
             ctx.restore();
@@ -117,6 +117,7 @@ class Villager {
         if (collide(this, player)) {
             this.vel.x = 0;
             this.drawUi = true;
+            document.getElementById('uiButton').style.display = 'block';
             if (player.use) player.trade = true;
             if (player.trade) {
                 function value (item, game) {
@@ -161,7 +162,13 @@ class Villager {
                             }
                         }
                         if (money >= product.price) {
-                            player.inventory = player.inventory.filter(i => i.name !== 'coin');
+                            let counter = 0;
+                            player.inventory.forEach((item, index) => {
+                                if (item.name === 'coin' && counter < product.price) {
+                                    player.inventory.splice(index, 1);
+                                    counter++;
+                                }
+                            });
                             player.inventory.push(toBuy);
                         }
                     }
