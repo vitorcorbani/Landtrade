@@ -2,6 +2,7 @@ function renderProgram(game, canvas, ctx) {
     if (game.start) {
         game.translateX = -game.player.x + canvas.width/2;
         game.translateY = -game.player.y + canvas.height/2;
+        document.getElementById('uiButton').style.display = 'none';
 
         ctx.save();
         ctx.translate(game.translateX, game.translateY);
@@ -122,6 +123,7 @@ window.addEventListener('load', function () {
         document.getElementById('newButton').addEventListener('click', () => {
             localStorage.removeItem('savedBlocks');
             localStorage.removeItem('playerInventory');
+            localStorage.removeItem('playerPosition');
             game.reset(game); 
         });
         function whenClick (mousePos) {
@@ -169,7 +171,7 @@ window.addEventListener('load', function () {
                                     return 0;
                                 }
                             }
-                        } else if (block.onScreen && !block.remove && block.visible && block.type !== 'liquid') {
+                        } else if (block.onScreen && !block.remove && block.visible && block.type !== 'liquid' && block.name !== 'flare') {
                             if (checkMouseCollide(mousePos, block)) block.checkHit(mousePos, game.player, x, y);
                             if (block.remove) {
                                 if (game.world === 'overworld') game.saveBlocks.push({x: block.x, y: block.y, name: false});
@@ -209,11 +211,22 @@ window.addEventListener('load', function () {
         function id (id) {
             return document.getElementById(id);
         }
+        document.getElementById('uiButton').style.display = 'none';
         if (!window.mobileCheck()) {
+            //main
+            id('useButton').style.display = 'none';
+            id('changeButton').style.display = 'none';
+            id('trashButton').style.display = 'none';
+            //controls
             id('leftButton').style.display = 'none';
             id('rigthButton').style.display = 'none';
             id('jumpButton').style.display = 'none';
         } else {
+            //main
+            id('useButton').style.display = 'visible';
+            id('changeButton').style.display = 'visible';
+            id('trashButton').style.display = 'visible';
+            //controls
             id('leftButton').style.display = 'visible';
             id('rigthButton').style.display = 'visible';
             id('jumpButton').style.display = 'visible';
