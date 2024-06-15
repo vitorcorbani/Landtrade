@@ -1,3 +1,56 @@
+function gameInfos () {
+    return {
+        tilesInfo: [
+            {name: 'dirt', color: 'rgb(90, 72, 22)', type: 'block', durability: '1', value: '0'},
+            {name: 'grass', color: 'green', type: 'block', durability: '1', value: '0'},
+            {name: 'wood', color: 'rgb(70, 52, 2)', type: 'block', durability: '2', value: '0'},
+            {name: 'plank', color: 'rgb(157, 90, 3)', type: 'block', durability: '2', value: '0'},
+            {name: 'brick', color: 'rgb(155, 20, 0)', type: 'block', durability: '2', value: '0'},
+            {name: 'leaf', color: 'DarkGreen', type: 'visible', durability: '1', value: '0'},
+            {name: 'iron', color: 'white', type: 'block', durability: '4', value: '3'},
+            {name: 'calcarium', color: 'rgb(25, 25, 25)', type: 'block', durability: '3', value: '1'},
+            {name: 'stone', color: 'gray', type: 'block', durability: '3', value: '0'},
+            {name: 'esmerald', color: 'rgb(10, 200, 30)', type: 'block', durability: '7', value: '7'},
+            {name: 'water', color: 'blue', type: 'liquid', durability: '1', value: '0'},
+            {name: 'lava', color: 'rgb(255, 120, 0)', type: 'liquid', durability: '1', value: '0'},
+            {name: 'sand', color: 'yellow', type: 'block', durability: '1', value: '1'},
+            {name: 'clay', color: 'rgb(180, 180, 235)', type: 'block', durability: '1', value: '1'},
+            {name: 'glass', color: 'rgb(255, 255, 255, 0.35)', type: 'block', durability: '1', value: '0'},
+            {name: 'portal', color: 'rgb(255, 0, 250, 0.75)', type: 'block', durability: '13', value: '0'},
+            {name: 'hell', color: 'rgb(255, 0, 0, 0.75)', type: 'block', durability: '13', value: '0'},
+            {name: '?', color: 'rgb(255, 50, 0, 0.2)', type: 'block', durability: '1', value: '0'},
+
+            {name: 'litter', color: 'rgb(80, 20, 10)', type: 'block', durability: '2', value: '0'},
+            {name: 'flare', color: 'orange', type: 'air', durability: '1', value: '0'},
+
+            {name: 'tree', color: 'rgb(70, 52, 2)', type: 'tree', durability: '1', value: '0'},
+            {name: 'river', color: 'blue', type: 'river', durability: '1', value: '0'},
+            {name: 'village', color: 'rgb(183, 116, 3)', type: 'village', durability: '1', value: '0'},
+            {name: 'cave', color: 'black', type: 'cave', durability: '1', value: '0'},
+        ],
+        itensInfo: [
+            {name: 'sword', img: 'swordImg', value: '16', damage: '2', break: '1', protection: '0', heal: '0'},
+            {name: 'pickaxe', img: 'pickaxeImg', value: '9', damage: '1', break: '3', protection: '0', heal: '0'},
+            {name: 'cuirass', img: 'cuirassImg', value: '20', damage: '1', break: '1', protection: '3', heal: '0'},
+            {name: 'armor', img: 'armorImg', value: '33', damage: '1', break: '1', protection: '10', heal: '0'},
+            {name: 'beef', img: 'beefImg', value: '6', damage: '1', break: '1', protection: '0', heal: '50'},
+            {name: 'coin', img: 'coinImg', value: '1', damage: '1', break: '1', protection: '0', heal: '0'},
+        ],
+        productsInfo: [
+            {name: 'sword', price: '16',},
+            {name: 'pickaxe', price: '9'},
+            {name: 'cuirass', price: '20'},
+            {name: 'armor', price: '33'},
+            {name: 'beef', price: '6'},
+
+            {name: 'plank', price: '1'},
+            {name: 'brick', price: '1'},
+            {name: 'glass', price: '1'},
+        ]
+    }
+}
+
+
 function getGame(canvas, ctx) {
     return {
         start: false,
@@ -28,50 +81,10 @@ function getGame(canvas, ctx) {
                 (this.setupGradient[3]), (this.setupGradient[4]), (this.setupGradient[5]),
                 (this.setupGradient[6]), (this.setupGradient[7]), (this.setupGradient[8])
             ]
-            this.tilesInfo = [
-                {name: 'dirt', color: 'rgb(90, 72, 22)', type: 'block', durability: '1', value: '0'},
-                {name: 'grass', color: 'green', type: 'block', durability: '1', value: '0'},
-                {name: 'wood', color: 'rgb(70, 52, 2)', type: 'block', durability: '2', value: '0'},
-                {name: 'plank', color: 'rgb(183, 116, 3)', type: 'block', durability: '2', value: '0'},
-                {name: 'leaf', color: 'DarkGreen', type: 'visible', durability: '1', value: '0'},
-                {name: 'iron', color: 'white', type: 'block', durability: '4', value: '4'},
-                {name: 'calcarium', color: 'rgb(25, 25, 25)', type: 'block', durability: '3', value: '1'},
-                {name: 'stone', color: 'gray', type: 'block', durability: '3', value: '0'},
-                {name: 'esmerald', color: 'rgb(10, 200, 30)', type: 'block', durability: '7', value: '8'},
-                {name: 'water', color: 'blue', type: 'liquid', durability: '1', value: '0'},
-                {name: 'lava', color: 'rgb(255, 120, 0)', type: 'liquid', durability: '1', value: '0'},
-                {name: 'sand', color: 'yellow', type: 'block', durability: '1', value: '1'},
-                {name: 'clay', color: 'rgb(180, 180, 235)', type: 'block', durability: '1', value: '1'},
-                {name: 'glass', color: 'rgb(255, 255, 255, 0.35)', type: 'block', durability: '1', value: '0'},
-                {name: 'portal', color: 'purple', type: 'block', durability: '10', value: '0'},
-                {name: '?', color: 'rgb(255, 50, 0, 0.2)', type: 'block', durability: '1', value: '0'},
-
-                {name: 'hell', color: 'red', type: 'block', durability: '10', value: '0'},
-                {name: 'litter', color: 'rgb(80, 20, 10)', type: 'block', durability: '2', value: '0'},
-                {name: 'flare', color: 'orange', type: 'air', durability: '1', value: '0'},
-
-                {name: 'tree', color: 'rgb(70, 52, 2)', type: 'tree', durability: '1', value: '0'},
-                {name: 'river', color: 'blue', type: 'river', durability: '1', value: '0'},
-                {name: 'village', color: 'rgb(183, 116, 3)', type: 'village', durability: '1', value: '0'},
-                {name: 'cave', color: 'black', type: 'cave', durability: '1', value: '0'},
-            ];
-            this.itensInfo = [
-                {name: 'sword', img: 'swordImg', value: '16', damage: '2', break: '1', protection: '0', heal: '0'},
-                {name: 'pickaxe', img: 'pickaxeImg', value: '9', damage: '1', break: '3', protection: '0', heal: '0'},
-                {name: 'cuirass', img: 'cuirassImg', value: '20', damage: '1', break: '1', protection: '3', heal: '0'},
-                {name: 'armor', img: 'armorImg', value: '33', damage: '1', break: '1', protection: '10', heal: '0'},
-                {name: 'beef', img: 'beefImg', value: '6', damage: '1', break: '1', protection: '0', heal: '40'},
-                {name: 'coin', img: 'coinImg', value: '1', damage: '1', break: '1', protection: '0', heal: '0'},
-            ];
-            this.productsInfo = [
-                {name: 'sword', price: '16',},
-                {name: 'pickaxe', price: '9'},
-                {name: 'cuirass', price: '20'},
-                {name: 'armor', price: '33'},
-                {name: 'beef', price: '6'},
-                {name: 'plank', price: '1'},
-                {name: 'glass', price: '1'},
-            ];
+            let infos = gameInfos();
+            this.tilesInfo = infos.tilesInfo;
+            this.itensInfo = infos.itensInfo;
+            this.productsInfo = infos.productsInfo;
 
             this.particles = [];
             for (let i = 0; i < 15; i++) {
@@ -85,6 +98,11 @@ function getGame(canvas, ctx) {
                     if (arrInfo[i] === 'object') item = new Item(this, arrInfo[i+1]);
                     this.player.inventory.push(item);
                 }
+            }
+            if (localStorage.getItem('playerPosition')) {
+                let arrInfo = localStorage.getItem('playerPosition').split(',');
+                this.player.x = Number(arrInfo[0]);
+                this.player.y = Number(arrInfo[1]);
             }
             this.entities = [];
             this.translateX = -this.player.x + canvas.width / 2;
@@ -120,6 +138,8 @@ function getGame(canvas, ctx) {
                 }
             });
             localStorage.setItem('playerInventory', inventorySave);
+            localStorage.setItem('playerPosition', String([game.player.x, game.player.y]));
+
             let blocksInfoSave = [];
             game.saveBlocks.forEach(save => {
                 blocksInfoSave.push(Number(save.x));
@@ -256,7 +276,7 @@ function getGame(canvas, ctx) {
                                     let length = 7-j;
                                     for (let i = 0; i <= 7; i++) {
                                         if (i+j+2 < length) {
-                                            if (existe(x+i+j-2, y-6-j)) blocks[x+i+j-2][y-6-j] = toBlock(blocks, x+i+j-2, y-6-j, 'plank');
+                                            if (existe(x+i+j-2, y-6-j)) blocks[x+i+j-2][y-6-j] = toBlock(blocks, x+i+j-2, y-6-j, 'brick');
                                         }
                                     }
                                 }
@@ -345,7 +365,6 @@ function getGame(canvas, ctx) {
         },
         generateHellChunks: function (game) {
             game.world = 'hell';
-            game.start = false;
             game.blocks = [];
             game.entities = [];
             for (let x = -Math.floor(game.width / 2 / game.chunckSize)*1.5; x <= Math.floor(game.width / 2 / game.chunckSize)*1.5; x++) {
@@ -460,7 +479,6 @@ function getGame(canvas, ctx) {
                     }
                 }
             }
-            game.start = true;
         },
         reset: function (game) {
             this.start = !this.start;
