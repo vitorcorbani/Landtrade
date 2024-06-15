@@ -30,21 +30,21 @@ class Villager {
             let uiX = -200;
             let uiY = -this.h;
             ctx.fillStyle = 'gray';
-            ctx.fillRect(uiX, uiY, this.w*8, 120);
+            ctx.fillRect(uiX, uiY, this.w*9, 170);
             ctx.restore();
 
             ctx.save();
-            ctx.font = '10px Trebuchet MS';
+            ctx.font = '13px Trebuchet MS';
             let trades = [];
             this.game.productsInfo.forEach((item, index) => {
                 trades.push((index+1) + ' - ' + item.name + ' - ' + item.price + ' coins');
             });
             for (let i = 1; i <= trades.length; i++) {
                 ctx.fillStyle = 'orange';
-                ctx.fillText(trades[i-1], uiX+3, uiY+11*i);
+                ctx.fillText(trades[i-1], uiX+3, uiY+14*i);
                 if (i === this.game.player.tradeSelected) {
                     ctx.strokeStyle = 'red';
-                    ctx.strokeRect(uiX+1, uiY+11*(i-1)+3, this.w*8 - 5, 120/11);
+                    ctx.strokeRect(uiX+1, uiY+14*(i-1)+3, this.w*9 - 5, 170/11);
                 }
             }
             ctx.restore();
