@@ -9,7 +9,7 @@ class Pig {
         this.h = this.image.height;
         this.lives = 4;
         this.scale = 1;
-        this.dropChance = 0.8;
+        this.dropChance = 0.9;
         this.drop = new Item(game, 'beef');
     }
     draw (ctx) {
