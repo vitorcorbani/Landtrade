@@ -36,6 +36,43 @@
     background: rgb(36, 36, 36);
 }
 
+#infos {
+    position: absolute;
+    top: 150px;
+    left: 20%;
+    translate: -50% 0;
+    height: 350px;
+    padding: 10px;
+    background-color: brown;
+    color: antiquewhite;
+}
+#infos div {
+    background-color: brown;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 3px
+}
+#infos div button {
+    color: white;
+    background-color: brown;
+    width: 60px;
+    scale: 1.1;
+    font: 15px Consolas;
+}
+#infos div label {
+    color: white;
+    background-color: brown;
+    font: 15px Consolas;
+    margin-right: 3px;
+}
+#infos div input {
+    color: white;
+    background-color: rgb(78, 72, 72);
+    width: 50px;
+    font: 15px Consolas;
+}
+
 
 #leftButton {
     scale: 2;
