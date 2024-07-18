@@ -144,12 +144,14 @@ window.addEventListener('load', function () {
         document.getElementById('startButton').addEventListener('click', () => {
             if (game.start) game.autoSave(game);
             game.reset(game);
+            minDelta = document.getElementById('updateRate').value;
         });
         document.getElementById('newButton').addEventListener('click', () => {
             localStorage.removeItem('savedBlocks');
             localStorage.removeItem('playerInventory');
             localStorage.removeItem('playerPosition');
             game.reset(game); 
+            minDelta = document.getElementById('updateRate').value;
         });
         function whenClick (mousePos) {
             function checkMouseCollide(mouse, other) {
