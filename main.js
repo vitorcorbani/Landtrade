@@ -119,7 +119,7 @@ window.addEventListener('load', function () {
 
     let lastTime = 0;
     let deniedTime = 0;
-    let minDelta = id('updateRate').value;
+    let minDelta = document.getElementById('updateRate').value;
     function animate(timeStamp) {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
