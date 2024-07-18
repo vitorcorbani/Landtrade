@@ -203,10 +203,10 @@ function getGame(canvas, ctx) {
                             }
                         }
                         game.PcreationX = Number(game.player.x);
-                        let tile = new Tile(game, x + Math.floor(game.PcreationX / game.tileSize), y, name);
+                        let tile = new Tile(game, x*game.tileSize + game.PcreationX, y*game.tileSize, name);
                         game.blocks[tileIndex].push(tile);
                     } else {
-                        game.blocks[tileIndex].push('');
+                        game.blocks[tileIndex].push({ x: x*game.tileSize + game.PcreationX, y: y*game.tileSize });
                     }
                 }
             }
@@ -217,12 +217,7 @@ function getGame(canvas, ctx) {
                     let block = blocks[x][y];
 
                     function toBlock(blocks, X, Y, name) {
-                        if (blocks[X][Y] === '') {
-                            X = (X - Math.floor(game.width / 2 / game.chunckSize)*1.5) + Math.floor(game.PcreationX / game.tileSize);
-                            return (new Tile(game, X, Y, name));
-                        } else {
-                            return (new Tile(game, blocks[X][Y].x / game.tileSize, blocks[X][Y].y / game.tileSize, name));
-                        }
+                        return (new Tile(game, blocks[X][Y].x, blocks[X][Y].y, name));
                     }
                     function existe(X, Y) {
                         if (X >= 0 && Y >= 0 && X < blocks.length && Y < blocks[X].length) return true;
@@ -245,7 +240,7 @@ function getGame(canvas, ctx) {
                                 if (existe(x+i, y+j) && blocks[x+i][y+j-1].name !== 'dirt') {
                                     let limit = PerlinNoise.noise(x+i, y+j, .1)*18;
                                     if (Math.abs(i) < limit-(Math.random()*3) && Math.abs(j) < limit-(Math.random()*3)) {
-                                        blocks[x+i][y+j] = '';
+                                        blocks[x+i][y+j] = {x: blocks[x+i][y+j].x, y: blocks[x+i][y+j].y};
                                     }
                                 }
                             }
@@ -259,7 +254,7 @@ function getGame(canvas, ctx) {
                             if (existe(x+i, y+1)) blocks[x+i][y+1] = toBlock(blocks, x+i, y+1, 'dirt');
                             if (existe(x+i, y+2)) blocks[x+i][y+2] = toBlock(blocks, x+i, y+2, 'dirt');
                             for (let j = -6; j < 0; j++) {
-                                if (existe(x+i, y+j)) blocks[x+i][y+j] = '';
+                                if (existe(x+i, y+j)) blocks[x+i][y+j] = {x: blocks[x+i][y+j].x, y: blocks[x+i][y+j].y};
                             }
                         }
                         function house (x,y) {
@@ -283,10 +278,10 @@ function getGame(canvas, ctx) {
                             }
                             //door
                             if (existe(x+3, y-1)) {
-                                blocks[x+3][y-1] = '';
+                                blocks[x+3][y-1] = {x: blocks[x+3][y-1].x, y: blocks[x+3][y-1].y};
                             }
                             if (existe(x+3, y-2)) {
-                                blocks[x+3][y-2] = '';
+                                blocks[x+3][y-2] = {x: blocks[x+3][y-2].x, y: blocks[x+3][y-2].y};
                             }
                             game.entities.push(new Villager(game, blocks[x+3][y-3].x - game.tileSize*1.5, blocks[x+3][y-3].y + game.tileSize));
                         }
@@ -295,7 +290,7 @@ function getGame(canvas, ctx) {
                     else if (blocks[x][y].type === 'river') {
                         for (let i = -11; i < 11; i++) { 
                             for (let j = -3; j < 2; j++) { 
-                                if (existe(x+i, y+j-1)) blocks[x+i][y+j-1] = '';
+                                if (existe(x+i, y+j-1)) blocks[x+i][y+j-1] = {x: blocks[x+i][y+j-1].x, y: blocks[x+i][y+j-1].y};
                             }
                         }
                         for (let i = -11; i < 11; i++) { 
@@ -309,7 +304,7 @@ function getGame(canvas, ctx) {
                     }
                     else if (spawnEntitie < 0.2) {
                         if (game.timer > 25) {
-                            if (blocks[x][y] !== '' && blocks[x][y-1] === '' && blocks[x][y-2] === '' && blocks[x][y-3] === '') {
+                            if (blocks[x][y] instanceof Tile && !(blocks[x][y-1] instanceof Tile) && !(blocks[x][y-2] instanceof Tile) && !(blocks[x][y-3] instanceof Tile)) {
                                 if (spawnEntitie < 0.1) {
                                     game.entities.push(new Enemy(game, block.x, block.y - game.tileSize*2, 'enemyImg1'));
                                 } else {
@@ -317,7 +312,7 @@ function getGame(canvas, ctx) {
                                 }
                             }
                         } else {
-                            if (blocks[x][y] !== '' && blocks[x][y-1] === '' && blocks[x][y-2] === '' && blocks[x][y-3] === '') {
+                            if (blocks[x][y] instanceof Tile && !(blocks[x][y-1] instanceof Tile) && !(blocks[x][y-2] instanceof Tile) && !(blocks[x][y-3] instanceof Tile)) {
                                 if (spawnEntitie < 0.05 && y * game.tileSize < game.height / 2 - 2 * game.tileSize) {
                                     game.entities.push(new Pig(game, block.x, block.y - game.tileSize*2));
                                 }
@@ -329,13 +324,12 @@ function getGame(canvas, ctx) {
             game.saveBlocks.forEach(save => {
                 for (let x = 0; x <= game.blocks.length - 1; x++) {
                     for (let y = 0; y <= game.blocks[x].length - 1; y++) {
-                        let xPos = game.tileSize*((x - Math.floor(game.width / 2 / game.chunckSize)*1.5)+Math.floor(game.PcreationX / game.tileSize));
-                        let yPos = y*game.tileSize;
-                        if (save.x == xPos && save.y == yPos) {
+                        const block = game.blocks[x][y]
+                        if (save.x == block.x && save.y == block.y) {
                             if (save.name !== false) {
-                                game.blocks[x][y] = new Tile(game, xPos/game.tileSize, yPos/game.tileSize, save.name);
+                                game.blocks[x][y] = new Tile(game, block.x, block.y, save.name);
                             } else {
-                                game.blocks[x][y] = '';
+                                game.blocks[x][y] = {x: block.x, y: block.y};
                             }
                         }
                     }
@@ -415,10 +409,10 @@ function getGame(canvas, ctx) {
                             }
                         }
                         game.PcreationX = Number(game.player.x);
-                        let tile = new Tile(game, x + Math.floor(game.PcreationX / game.tileSize), y, name);
+                        let tile = new Tile(game, x*game.tileSize + game.PcreationX, y*game.tileSize, name);
                         game.blocks[tileIndex].push(tile);
                     } else {
-                        game.blocks[tileIndex].push('');
+                        game.blocks[tileIndex].push({x: x*game.tileSize + game.PcreationX, y: y*game.tileSize});
                     }
                 }
             }
@@ -429,12 +423,7 @@ function getGame(canvas, ctx) {
                     let block = blocks[x][y];
 
                     function toBlock(blocks, X, Y, name) {
-                        if (blocks[X][Y] === '') {
-                            X = (X - Math.floor(game.width / 2 / game.chunckSize)*1.5) + Math.floor(game.PcreationX / game.tileSize);
-                            return (new Tile(game, X, Y, name));
-                        } else {
-                            return (new Tile(game, blocks[X][Y].x / game.tileSize, blocks[X][Y].y / game.tileSize, name));
-                        }
+                        return (new Tile(game, blocks[X][Y].x, blocks[X][Y].y, name));
                     }
                     function existe(X, Y) {
                         if (X >= 0 && Y >= 0 && X < blocks.length && Y < blocks[X].length) return true;
@@ -447,7 +436,7 @@ function getGame(canvas, ctx) {
                                 if (existe(x+i, y+j) && blocks[x+i][y+j-1].name !== 'stone') {
                                     let limit = PerlinNoise.noise(x+i, y+j, .1)*18;
                                     if (Math.abs(i) < limit-(Math.random()*3) && Math.abs(j) < limit-(Math.random()*3)) {
-                                        blocks[x+i][y+j] = '';
+                                        blocks[x+i][y+j] = {x: blocks[x+i][y+j].x, y: blocks[x+i][y+j].y};
                                     }
                                 }
                             }
@@ -456,7 +445,7 @@ function getGame(canvas, ctx) {
                     else if (blocks[x][y].type === 'river') {
                         for (let i = -11; i < 11; i++) { 
                             for (let j = -3; j < 2; j++) { 
-                                if (existe(x+i, y+j-1)) blocks[x+i][y+j-1] = '';
+                                if (existe(x+i, y+j-1)) blocks[x+i][y+j-1] = {x: blocks[x+i][y+j-1].x, y: blocks[x+i][y+j-1].y};
                             }
                         }
                         for (let i = -11; i < 11; i++) { 
@@ -469,7 +458,7 @@ function getGame(canvas, ctx) {
                         }
                     }
                     else if (spawnEntitie < 0.3) {
-                        if (blocks[x][y] !== '' && blocks[x][y - 1] === '' && blocks[x][y - 2] === '' && blocks[x][y - 3] === '') {
+                        if (blocks[x][y] instanceof Tile && !(blocks[x][y - 1] instanceof Tile) && !(blocks[x][y - 2] instanceof Tile) && !(blocks[x][y - 3] instanceof Tile)) {
                             if (spawnEntitie < 0.15) {
                                 game.entities.push(new Enemy(game, block.x, block.y - game.tileSize * 2, 'enemyImg1'));
                             } else {
@@ -484,7 +473,9 @@ function getGame(canvas, ctx) {
             this.start = !this.start;
             if (this.start) {
                 this.define(game);
+                document.getElementById('infos').style.display = 'none'
             } else {
+                document.getElementById('infos').style.display = 'block'
             }
         }
     }
