@@ -118,12 +118,23 @@ window.addEventListener('load', function () {
     Ui();
 
     let lastTime = 0;
+    let deniedTime = 0;
+    let minDelta = id('updateRate').value;
     function animate(timeStamp) {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        spriteTiming(deltaTime);
-        renderProgram(game, canvas, ctx);
+        //globalTiming(deltaTime);
+        if (deltaTime < 30) {
+            spriteTiming(deltaTime);
+            if (deltaTime+deniedTime >= minDelta) {
+                deniedTime = (deltaTime+deniedTime)-minDelta;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                renderProgram(game, canvas, ctx);
+            } else {
+                deniedTime += deltaTime;
+            }
+            if (deniedTime > 100) deniedTime = 0;
+        }
         requestAnimationFrame(animate);
     }
     animate(0);
