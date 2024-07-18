@@ -28,8 +28,8 @@ function renderProgram(game, canvas, ctx) {
         game.portals = [];
         for (let x = 0; x <= game.blocks.length-1; x++) {
             for (let y = 0; y <= game.blocks[x].length-1; y++) {
-                let block = game.blocks[x][y];
-                if (block !== '') {
+                const block = game.blocks[x][y];
+                if (block instanceof Tile) {
                     if (block.name === 'portal') game.portals.push({x: block.x, y: block.y});
                     if (block.name === 'hell') game.hells.push({x: block.x, y: block.y});
                     if (block.x+game.translateX > -game.tileSize && block.x+game.translateX < canvas.width &&
@@ -44,8 +44,12 @@ function renderProgram(game, canvas, ctx) {
                                 }
                                 function spread (X, Y) {
                                     if (existe(X, Y)) {
-                                        if (game.blocks[X][Y] === '') game.blocks[X][Y] = 
-                                        new Tile(game, game.blocks[x][y].x/game.tileSize + (X-x), game.blocks[x][y].y/game.tileSize + (Y-y), game.blocks[x][y].name)
+                                        if (!(game.blocks[x][y] instanceof Tile)) game.blocks[X][Y] = new Tile(
+                                            game, 
+                                            game.blocks[x][y].x + (X-x)*game.tileSize, 
+                                            game.blocks[x][y].y + (Y-y)*game.tileSize, 
+                                            game.blocks[x][y].name
+                                        )
                                     }
                                 }
                                 spread(x+1, y);
@@ -53,12 +57,14 @@ function renderProgram(game, canvas, ctx) {
                                 spread(x, y+1);
                             }
                         }
-                        else { game.blocks[x][y] = ''; }
+                        else { game.blocks[x][y] = {x: block.x, y: block.y}; }
                     } else block.onScreen = false;
                 }
             }  
         }
         game.entities.forEach((e, index) => {
+            const yBeforegravity = e.y;
+            let dontFall = false
             if (e.x+game.translateX > -e.w && e.x+game.translateX < canvas.width &&
             e.y+game.translateY > -e.h && e.y+game.translateY < canvas.height) {
                 e.update(game.player);
@@ -71,6 +77,14 @@ function renderProgram(game, canvas, ctx) {
                     }
                     game.entities.splice(index, 1);
                 }  
+            } else dontFall = true
+            if (
+                dontFall || (
+                game.player.x < game.blocks[0][game.blocks[0].length-1].x || 
+                game.player.x > game.blocks[game.blocks.length-1][game.blocks[game.blocks.length-1].length-1].x
+                )
+            ) {
+                e.y = yBeforegravity
             }
         });
         game.player.update();
@@ -142,11 +156,9 @@ window.addEventListener('load', function () {
 
             for (let x = 0; x <= game.blocks.length-1; x++) {
                 for (let y = 0; y <= game.blocks[x].length-1; y++) {
-                    let xPos = game.tileSize*((x - Math.floor(game.width / 2 / game.chunckSize)*1.5)+Math.floor(game.PcreationX / game.tileSize));
-                    let yPos = y*game.tileSize;
-                    let block = game.blocks[x][y];
-                    if (dist(xPos+game.tileSize/2, yPos+game.tileSize/2, game.player.x+game.player.w/2, game.player.y+game.player.w/2) < 90+game.tileSize/2) {
-                        if (block === '' && checkMouseCollide(mousePos, {x: xPos, y: yPos, w: game.tileSize, h: game.tileSize})) {
+                    const block = game.blocks[x][y];
+                    if (dist(block.x+game.tileSize/2, block.y+game.tileSize/2, game.player.x+game.player.w/2, game.player.y+game.player.w/2) < 90+game.tileSize/2) {
+                        if (!(block instanceof Tile) && checkMouseCollide(mousePos, {x: block.x, y: block.y, w: game.tileSize, h: game.tileSize})) {
                             if (game.player.placeBlock && game.player.inventory.length > 0 && typeof game.player.inventory[game.player.invSelected] === 'string') { //place
                                 function checkExistance(X, Y) {
                                     if (X >= 0 && Y >= 0 && X < game.blocks.length && Y < game.blocks[X].length) return game.blocks[X][Y];
@@ -164,7 +176,7 @@ window.addEventListener('load', function () {
                                     placeable(checkExistance(x+1, y))
                                 ]
                                 if (!(toCheck.every(e => e === false))) {
-                                    let inventoryBlock = new Tile(game, xPos/game.tileSize, yPos / game.tileSize, game.player.inventory[game.player.invSelected]);
+                                    let inventoryBlock = new Tile(game, block.x, block.y, game.player.inventory[game.player.invSelected]);
                                     game.player.inventory.splice(game.player.invSelected, 1);
                                     game.blocks[x][y] = inventoryBlock;
                                     if (game.world === 'overworld') game.saveBlocks.push({x: inventoryBlock.x, y: inventoryBlock.y, name: inventoryBlock.name});
